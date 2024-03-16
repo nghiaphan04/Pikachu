@@ -1,6 +1,7 @@
 package View;
 
 import java.awt.BorderLayout;
+import Model.ButtonEvents;
 import java.awt.EventQueue;
 
 import javax.swing.ImageIcon;
@@ -31,10 +32,12 @@ public  class MainFrame extends JFrame implements ActionListener,Runnable{
 	private JPanel mainPanel;
 	private JProgressBar progressTime;
 	private JLabel score;
+	ButtonEvents btEvns;
 	private int maxTime =10;
 	private int time = maxTime;
 	private boolean pause=false;
     private boolean resume= false;
+    
     public static void main(String[] args) {
         EventQueue.invokeLater(new Runnable() {
             public void run() {
@@ -51,6 +54,7 @@ public  class MainFrame extends JFrame implements ActionListener,Runnable{
 
  
     public MainFrame() {
+    	btEvns = new ButtonEvents();
     	getContentPane().add(mainPanel = createMainPanel());
 		setTitle("Pokemon Game");
 		setResizable(false);
@@ -58,7 +62,7 @@ public  class MainFrame extends JFrame implements ActionListener,Runnable{
 		setSize(width, height);
 		setLocationRelativeTo(null);
 		setVisible(true);
-
+		
     }
     public JPanel createMainPanel() {
     	JLayeredPane layeredPane = new JLayeredPane();
@@ -87,9 +91,15 @@ public  class MainFrame extends JFrame implements ActionListener,Runnable{
         return icon;
     }
     public JPanel createGraphicsPanel() {
-    	JPanel panel = new JPanel(null);
-		panel.setBackground(Color.gray);
-		panel.setBounds(72,155 , 450, 450);
+    	JPanel panel = new JPanel(new GridLayout(8,8));
+    	for(int i=0;i<8;i++) {
+    		for(int j =0 ;j<8;j++) {
+    			panel.add(btEvns.getBtnMtx()[i][j]);
+    		}
+    	}
+    	
+		panel.setBackground(new Color(225, 239, 163));
+		panel.setBounds(72,169 , 449, 450);
     	return panel;
     }
     public JPanel createControlPanel() {
