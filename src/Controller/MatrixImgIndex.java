@@ -3,6 +3,7 @@ package Controller;
 import java.util.ArrayList;
 import java.util.Random;
 public class MatrixImgIndex {
+<<<<<<< HEAD
 	private int row,col;
 	private int[][] matrix;
 	
@@ -53,6 +54,11 @@ public class MatrixImgIndex {
 	}
 	public int getRow() {
 		return row;
+=======
+
+	public MatrixImgIndex() {
+		
+>>>>>>> 0f49acb5df24fb4250087420445d71f1836011bf
 	}
 
 	public void setRow(int row) {
