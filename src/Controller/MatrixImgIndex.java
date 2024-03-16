@@ -1,6 +1,7 @@
 package Controller;
 
 import java.util.ArrayList;
+import java.awt.Point;
 import java.util.Random;
 public class MatrixImgIndex {
 	private int row,col;
@@ -30,8 +31,8 @@ public class MatrixImgIndex {
 			if( arrAppear[rdImg] < maxAppear) {
 				for(int j=0;j<2;j++) {
 					int rdIndex = rd.nextInt(listPoint.size());
-					int x = listPoint.get(rdIndex).getX();
-					int y = listPoint.get(rdIndex).getY();
+					int x = listPoint.get(rdIndex).x;
+					int y = listPoint.get(rdIndex).y;
 					matrix[x][y]= rdImg;
 					arrAppear[rdImg]++;
 					listPoint.remove(rdIndex);
@@ -51,6 +52,14 @@ public class MatrixImgIndex {
 			System.out.println();
 		}
 	}
+	
+	public boolean checkPoint(Point a, Point b) {
+        if (!a.equals(b) && matrix[a.x][a.y] == matrix[b.x][b.y]) {
+            return true;
+        }
+        return false;
+    }
+	
 	public int getRow() {
 		return row;
 	}
