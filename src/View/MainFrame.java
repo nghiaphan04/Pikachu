@@ -33,7 +33,7 @@ public  class MainFrame extends JFrame implements ActionListener,Runnable{
 	private JProgressBar progressTime;
 	private JLabel score;
 	ButtonEvents btEvns;
-	private int maxTime =10;
+	private int maxTime = 400;
 	private int time = maxTime;
 	private boolean pause=false;
     private boolean resume= false;
@@ -69,7 +69,7 @@ public  class MainFrame extends JFrame implements ActionListener,Runnable{
         layeredPane.setLayout(null);
         
         JLabel labelBg = new JLabel();
-    	labelBg.setIcon(resizeImg("/View/icon/BgImage (5).png"));
+    	labelBg.setIcon(resizeImg("/View/icon/BgImage.png"));
     	labelBg.setBounds(0, 0, 600, 660);
     	
     	layeredPane.add(createExitPanel());

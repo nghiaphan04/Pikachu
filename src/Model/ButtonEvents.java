@@ -10,6 +10,7 @@ import View.MainFrame;
 import Controller.MatrixImgIndex;
 
 public class ButtonEvents extends JPanel implements ActionListener {
+	
 	private Color backGroundColor = Color.lightGray;
     private final int row = 8;
     private final int col = 8;
@@ -30,7 +31,6 @@ public class ButtonEvents extends JPanel implements ActionListener {
     }
 
     private void newGame() {
-        mtx = new MatrixImgIndex(row, col);
         createArrImgBtn();
     }
 
@@ -48,12 +48,9 @@ public class ButtonEvents extends JPanel implements ActionListener {
     }
 
     private Icon getImg(int indexImg) {
-    	int width = 48, height = 48;
+    	int width = 52, height = 52;
         Image img = null;
-        String image = "/icons/" + indexImg + ".png";
-        if (getClass().getResource(image) == null) {
-            image = "/icons/" + indexImg + ".jpg";
-        }
+        String image = "/View/icon/" + indexImg + ".jpg";
         img = new ImageIcon(getClass().getResource(image)).getImage();
         Icon icon = new ImageIcon(img.getScaledInstance(width, height, Image.SCALE_SMOOTH));
         return icon;
@@ -72,7 +69,6 @@ public class ButtonEvents extends JPanel implements ActionListener {
     
     
     public void execute(Point p1, Point p2) {
-        System.out.println("delete");
         setDisable(btnMtx[p1.x][p1.y]);
         setDisable(btnMtx[p2.x][p2.y]);
     }
@@ -92,7 +88,7 @@ public class ButtonEvents extends JPanel implements ActionListener {
         this.btnMtx = btnMtx;
     }
     
-    public void actionAfterClick(ActionEvent e) {
+    public void actionPerformed(ActionEvent e) {
     	items = col * row / 2;
         String indexBtn = e.getActionCommand();
         int indexTrim = indexBtn.lastIndexOf(",");
@@ -115,12 +111,9 @@ public class ButtonEvents extends JPanel implements ActionListener {
 			btnMtx[p1.x][p1.y].setBorder(null);
 			p1 = null;
 			p2 = null;
-			System.out.println("done");
 			if (items == 0) {
 				Frame.showDialogNewGame("Congratulation", "You win", 1);
 			}
 		}
     }
-    
-    
 }
