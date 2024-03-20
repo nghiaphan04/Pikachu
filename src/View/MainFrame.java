@@ -172,9 +172,10 @@ public  class MainFrame extends JFrame implements ActionListener,Runnable{
         score.setText(newScore);
     }
     public void newGame() {
-		time =maxTime;
+		
 		mainPanel.removeAll();
 		mainPanel.add(createMainPanel());
+		time = maxTime;
 		mainPanel.validate();
 		mainPanel.setVisible(true);
 		btEvns = new ButtonEvents(this);
