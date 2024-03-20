@@ -33,7 +33,7 @@ public  class MainFrame extends JFrame implements ActionListener,Runnable{
 	private JProgressBar progressTime;
 	private JLabel score;
 	ButtonEvents btEvns;
-	private int maxTime = 400;
+	private int maxTime = 10;
 	private int time = maxTime;
 	private boolean pause=false;
     private boolean resume= false;
@@ -54,7 +54,8 @@ public  class MainFrame extends JFrame implements ActionListener,Runnable{
 
  
     public MainFrame() {
-    	btEvns = new ButtonEvents();
+        
+    	btEvns = new ButtonEvents(this);
     	getContentPane().add(mainPanel = createMainPanel());
 		setTitle("Pokemon Game");
 		setResizable(false);
@@ -105,6 +106,7 @@ public  class MainFrame extends JFrame implements ActionListener,Runnable{
     public JPanel createControlPanel() {
 	    JPanel Mainpanel = new JPanel(null);
 	    JLabel tiltleScore = new JLabel("Score:");
+	    score = new JLabel("0");
 	    JLabel tiltleTime = new JLabel("Time:");
 	    JButton btnNewGame = new JButton("New game");
 	    
@@ -117,17 +119,21 @@ public  class MainFrame extends JFrame implements ActionListener,Runnable{
 	    progressTime = new JProgressBar(0, 100);
 	    progressTime.setValue(100);
 	    
+	    score.setFont(new Font("Tahoma", Font.BOLD, 15));
 	    tiltleScore.setFont(new Font("Tahoma", Font.BOLD, 15));
 	    tiltleTime.setFont(new Font("Tahoma", Font.BOLD, 15));
 
 	    // set bounds for your components
 	    tiltleScore.setBounds(10, 10, 200, 20);
+	    score.setBounds(65, 10, 200, 20);
 	    tiltleTime.setBounds(10, 30, 200, 20);
 	    progressTime.setBounds(55, 34, 200, 13);
 	    btnNewGame.setBounds(350, 17, 100, 30);
 
 	    // add all components to the panel
+	    
 	    Mainpanel.add(tiltleScore);
+	    Mainpanel.add(score);
 	    Mainpanel.add(tiltleTime);
 	    Mainpanel.add(progressTime);
 	    Mainpanel.add(btnNewGame);
@@ -138,6 +144,7 @@ public  class MainFrame extends JFrame implements ActionListener,Runnable{
 	    btnNewGame.setCursor(new Cursor(Cursor.HAND_CURSOR));
 	    btnNewGame.setFocusPainted(false);
 
+	    
 	    return Mainpanel;
     }
     public JPanel createExitPanel() {
@@ -161,11 +168,17 @@ public  class MainFrame extends JFrame implements ActionListener,Runnable{
     	
     	return panel;
     }
+    public void updateScoreLabel(String newScore) {
+        score.setText(newScore);
+    }
     public void newGame() {
 		time =maxTime;
+		mainPanel.removeAll();
 		mainPanel.add(createMainPanel());
 		mainPanel.validate();
 		mainPanel.setVisible(true);
+		btEvns = new ButtonEvents(this);
+		pause = false;
 		score.setText("0");
 	}
     public void run() {
@@ -187,7 +200,6 @@ public  class MainFrame extends JFrame implements ActionListener,Runnable{
 		JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null,
 				null, null);
 		if (select == 0) {
-		            pause=false;
 			newGame();
 		} else {
 			if(t==1){

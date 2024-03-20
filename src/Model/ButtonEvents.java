@@ -17,20 +17,22 @@ public class ButtonEvents extends JPanel implements ActionListener {
     private JButton[][] btnMtx;
     private MatrixImgIndex mtx;
     private MainFrame Frame;
-    
+   
     private boolean check;
     private int items;
-    private int score = 0;
+    private int score ;
     
     private Point p1 = null;
     private Point p2 = null;
     
-    public ButtonEvents() {
+    public ButtonEvents(MainFrame frame) {
+    	this.Frame =  frame;
     	mtx = new MatrixImgIndex(row, col);
         newGame();
     }
 
     private void newGame() {
+    	this.score = 0;
         createArrImgBtn();
     }
 
@@ -48,7 +50,7 @@ public class ButtonEvents extends JPanel implements ActionListener {
     }
 
     private Icon getImg(int indexImg) {
-    	int width = 52, height = 52;
+    	int width = 54, height = 54;
         Image img = null;
         String image = "/View/icon/" + indexImg + ".jpg";
         img = new ImageIcon(getClass().getResource(image)).getImage();
@@ -80,7 +82,20 @@ public class ButtonEvents extends JPanel implements ActionListener {
     }
     
 
-    public JButton[][] getBtnMtx() {
+    public int getScore() {
+		return score;
+	}
+
+	@Override
+	public String toString() {
+		return  String.valueOf(score);
+	}
+
+	public void setScore(int score) {
+		this.score = score;
+	}
+
+	public JButton[][] getBtnMtx() {
         return btnMtx;
     }
 
@@ -106,6 +121,7 @@ public class ButtonEvents extends JPanel implements ActionListener {
 				execute(p1, p2);
 				check = false;
 				score += 10;
+				Frame.updateScoreLabel(String.valueOf(this.score));
 				items--;
 			}
 			btnMtx[p1.x][p1.y].setBorder(null);
