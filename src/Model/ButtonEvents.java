@@ -91,6 +91,13 @@ public class ButtonEvents extends JPanel implements ActionListener {
 	public String toString() {
 		return  String.valueOf(score);
 	}
+	public int getItems() {
+		return items;
+	}
+
+	public void setItems(int items) {
+		this.items = items;
+	}
 
 	public void setScore(int score) {
 		this.score = score;
@@ -129,9 +136,10 @@ public class ButtonEvents extends JPanel implements ActionListener {
             p1 = null;
             p2 = null;
             if (items == 0) {
-                Frame.showDialogNewGame("Congratulation", "You win", 1);
+                Frame.showDialogNewGame("You win, do you want to create a new game?", "Congratulation","new game");
             }
         }
     }
 
+	
 }

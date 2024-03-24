@@ -33,11 +33,12 @@ public class MainFrame extends JFrame implements ActionListener,Runnable{
 	private JProgressBar progressTime;
 	private JLabel score;
 	private JButton btnExitButton;
+	private JButton btnNewGame ;
 	ButtonEvents btEvns;
-	private int maxTime = 100;
+	private int maxTime = 10;
 	private int time = maxTime;
 	private boolean pause;
-    private boolean resume;
+
     
     public static void main(String[] args) {
         EventQueue.invokeLater(new Runnable() {
@@ -58,7 +59,6 @@ public class MainFrame extends JFrame implements ActionListener,Runnable{
         
     	btEvns = new ButtonEvents(this);
     	pause=false;
-        resume= false;
     	getContentPane().add(mainPanel = createMainPanel());
 		setTitle("Pokemon Game");
 		setResizable(false);
@@ -112,13 +112,9 @@ public class MainFrame extends JFrame implements ActionListener,Runnable{
 	    JLabel tiltleScore = new JLabel("Score:");
 	    score = new JLabel("0");
 	    JLabel tiltleTime = new JLabel("Time:");
-	    JButton btnNewGame = new JButton("New game");
+	    btnNewGame = new JButton("New game");
+	    btnNewGame.addActionListener(this);
 	    
-	    btnNewGame.addActionListener(new ActionListener() {
-	        public void actionPerformed(ActionEvent e) {
-	            showDialogNewGame("Your game hasn't done. Do you want to create a new game?", "Warning", 0);
-	        }
-	    });
 	    
 	    progressTime = new JProgressBar(0, 100);
 	    progressTime.setValue(100);
@@ -127,14 +123,13 @@ public class MainFrame extends JFrame implements ActionListener,Runnable{
 	    tiltleScore.setFont(new Font("Tahoma", Font.BOLD, 15));
 	    tiltleTime.setFont(new Font("Tahoma", Font.BOLD, 15));
 
-	    // set bounds for your components
+	 
 	    tiltleScore.setBounds(10, 10, 200, 20);
 	    score.setBounds(65, 10, 200, 20);
 	    tiltleTime.setBounds(10, 30, 200, 20);
 	    progressTime.setBounds(55, 34, 200, 13);
 	    btnNewGame.setBounds(350, 17, 100, 30);
 
-	    // add all components to the panel
 	    
 	    Mainpanel.add(tiltleScore);
 	    Mainpanel.add(score);
@@ -179,14 +174,16 @@ public class MainFrame extends JFrame implements ActionListener,Runnable{
 		mainPanel.validate();
 		mainPanel.setVisible(true);
 		btEvns = new ButtonEvents(this);
+		btnExitButton.addActionListener(this);
+		btnNewGame.addActionListener(this); ;
 		pause = false;
 		score.setText("0");  
 	    Thread thread = new Thread(this); 
 	    thread.start();                  
-
-		
 		
 	}
+ 
+    
     public void run() {
         while (pause == false) {
         try {
@@ -196,25 +193,42 @@ public class MainFrame extends JFrame implements ActionListener,Runnable{
         }
         time--;
         progressTime.setValue((int) ((double) time / maxTime * 100));
+	        if(time <= 0 &&  btEvns.getItems() >=0) {
+	        	showDialogNewGame("You lost, do you want create new game","warning","lost game");
+	        	System.out.println("1");
+	        	break;
+	        }
         }
      }
 
-    public void showDialogNewGame(String message, String title, int t) {
+    public void showDialogNewGame(String message, String title,String action) {
         pause=true;
-        resume=false;
+
 		int select = JOptionPane.showOptionDialog(null, message, title,
 		JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null,
 				null, null);
-		if (select == 0) {
+		
+		if(select == 0 && action == "new game" ) {
 			newGame();
-		} else {
-			if(t==1){
-                    System.exit(0);
-                    
-                }else{
-                    resume=true;
-                }
-      }
+		}
+		if(select == 1 && action == "new game" ) {
+			pause = false;
+			Thread newThread = new Thread(this);
+			newThread.start();
+		    
+		}
+		if(select == 1 && action == "lost game" ) {
+			System.exit(1);
+		}
+		if(select == 0 && action == "exit") {
+			System.exit(1);
+		}
+		if(select == 1 && action == "exit") {
+			pause = false;
+			Thread newThread = new Thread(this);
+			newThread.start();
+		}
+		
 		
    }
 
@@ -222,7 +236,11 @@ public class MainFrame extends JFrame implements ActionListener,Runnable{
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == btnExitButton) {
-            showDialogNewGame("Are you sure you want to exit?", "Exit", 0);
+            showDialogNewGame("Are you sure you want to exit?", "Exit","exit");
         }
+		if(e.getSource()== btnNewGame) {
+        	showDialogNewGame("Your game hasn't done. Do you want to create a new game?", "Warning","new game");
+        }
+		
 	}
 }
