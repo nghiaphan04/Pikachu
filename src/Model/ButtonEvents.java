@@ -104,7 +104,7 @@ public class ButtonEvents extends JPanel implements ActionListener {
     }
     
     public void actionPerformed(ActionEvent e) {
-    	items = col * row / 2;
+    	items = col * row / 2 - 1;
         String indexBtn = e.getActionCommand();
         int indexTrim = indexBtn.lastIndexOf(",");
         int x = Integer.parseInt(indexBtn.substring(0, indexTrim));
@@ -128,7 +128,7 @@ public class ButtonEvents extends JPanel implements ActionListener {
 			p1 = null;
 			p2 = null;
 			if (items == 0) {
-				Frame.showDialogNewGame("Congratulation", "You win", 1);
+				Frame.showDialogNewGame("Congratulation", "You win", 0);
 			}
 		}
     }

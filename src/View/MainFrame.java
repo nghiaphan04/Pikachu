@@ -27,16 +27,17 @@ import java.awt.Image;
 import java.awt.LayoutManager;
 import javax.swing.JToolBar;
 
-public  class MainFrame extends JFrame implements ActionListener,Runnable{
+public class MainFrame extends JFrame implements ActionListener,Runnable{
 	private int width = 610,height =670;
 	private JPanel mainPanel;
 	private JProgressBar progressTime;
 	private JLabel score;
+	private JButton btnExitButton;
 	ButtonEvents btEvns;
 	private int maxTime = 10;
 	private int time = maxTime;
-	private boolean pause=false;
-    private boolean resume= false;
+	private boolean pause;
+    private boolean resume;
     
     public static void main(String[] args) {
         EventQueue.invokeLater(new Runnable() {
@@ -56,6 +57,8 @@ public  class MainFrame extends JFrame implements ActionListener,Runnable{
     public MainFrame() {
         
     	btEvns = new ButtonEvents(this);
+    	pause=false;
+        resume= false;
     	getContentPane().add(mainPanel = createMainPanel());
 		setTitle("Pokemon Game");
 		setResizable(false);
@@ -63,6 +66,7 @@ public  class MainFrame extends JFrame implements ActionListener,Runnable{
 		setSize(width, height);
 		setLocationRelativeTo(null);
 		setVisible(true);
+		btnExitButton.addActionListener(this);
 		
     }
     public JPanel createMainPanel() {
@@ -153,13 +157,9 @@ public  class MainFrame extends JFrame implements ActionListener,Runnable{
     	panel.setBackground(new Color(0,0,0,0));
 	    panel.setBounds(530,603 , 63, 35);
 	    
-	    JButton btnExitButton = new JButton("Exit");
+	    btnExitButton = new JButton("Exit");
 
-	    btnExitButton.addActionListener(new ActionListener() {
-	        public void actionPerformed(ActionEvent e) {
-	        showDialogNewGame("Are you sure you want to exit?", "Exit",0);
-	        }
-	    });
+	   
 	    
 	    btnExitButton.setBounds(0, 0, 60, 23);
 	    btnExitButton.setFocusPainted(false);
@@ -180,7 +180,12 @@ public  class MainFrame extends JFrame implements ActionListener,Runnable{
 		mainPanel.setVisible(true);
 		btEvns = new ButtonEvents(this);
 		pause = false;
-		score.setText("0");
+		score.setText("0");  
+	    Thread thread = new Thread(this); 
+	    thread.start();                  
+
+		
+		
 	}
     public void run() {
         while (pause == false) {
@@ -212,4 +217,12 @@ public  class MainFrame extends JFrame implements ActionListener,Runnable{
       }
 		
    }
+
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		if (e.getSource() == btnExitButton) {
+            showDialogNewGame("Are you sure you want to exit?", "Exit", 0);
+        }
+	}
 }
