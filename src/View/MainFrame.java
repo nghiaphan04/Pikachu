@@ -34,7 +34,7 @@ public class MainFrame extends JFrame implements ActionListener,Runnable{
 	private JLabel score;
 	private JButton btnExitButton;
 	ButtonEvents btEvns;
-	private int maxTime = 10;
+	private int maxTime = 100;
 	private int time = maxTime;
 	private boolean pause;
     private boolean resume;

@@ -19,7 +19,7 @@ public class ButtonEvents extends JPanel implements ActionListener {
     private MainFrame Frame;
    
     private boolean check;
-    private int items;
+    private int items = 32;
     private int score ;
     
     private Point p1 = null;
@@ -37,6 +37,7 @@ public class ButtonEvents extends JPanel implements ActionListener {
     }
 
     private void createArrImgBtn() {
+    	
         setLayout(new GridLayout(row, col));
         btnMtx = new JButton[row][col];
         for (int i = 0; i < row; i++) {
@@ -103,33 +104,34 @@ public class ButtonEvents extends JPanel implements ActionListener {
         this.btnMtx = btnMtx;
     }
     
+    
     public void actionPerformed(ActionEvent e) {
-    	items = col * row / 2 - 1;
         String indexBtn = e.getActionCommand();
         int indexTrim = indexBtn.lastIndexOf(",");
         int x = Integer.parseInt(indexBtn.substring(0, indexTrim));
         int y = Integer.parseInt(indexBtn.substring(indexTrim + 1));
         if (p1 == null) {
-			p1 = new Point(x, y);
-			btnMtx[p1.x][p1.y].setBorder(new LineBorder(Color.red));
-		} else {
-			p2 = new Point(x, y);
-			check = mtx.checkPoint(p1, p2);
-			if (check != false) {
-				mtx.getMatrix()[p1.x][p1.y] = 0;
-				mtx.getMatrix()[p2.x][p2.y] = 0;
-				execute(p1, p2);
-				check = false;
-				score += 10;
-				Frame.updateScoreLabel(String.valueOf(this.score));
-				items--;
-			}
-			btnMtx[p1.x][p1.y].setBorder(null);
-			p1 = null;
-			p2 = null;
-			if (items == 0) {
-				Frame.showDialogNewGame("Congratulation", "You win", 0);
-			}
-		}
+            p1 = new Point(x, y);
+            btnMtx[p1.x][p1.y].setBorder(new LineBorder(Color.red));
+        } else {
+            p2 = new Point(x, y);
+            check = mtx.checkPoint(p1, p2);
+            if (check) {
+                mtx.getMatrix()[p1.x][p1.y] = 0;
+                mtx.getMatrix()[p2.x][p2.y] = 0;
+                execute(p1, p2);
+                score += 10;
+                Frame.updateScoreLabel(String.valueOf(this.score));
+                items--;
+                System.out.println(items);
+            }
+            btnMtx[p1.x][p1.y].setBorder(null);
+            p1 = null;
+            p2 = null;
+            if (items == 0) {
+                Frame.showDialogNewGame("Congratulation", "You win", 1);
+            }
+        }
     }
+
 }
