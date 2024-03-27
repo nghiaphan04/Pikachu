@@ -8,8 +8,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.TitledBorder;
+
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 import javax.swing.JOptionPane;
@@ -18,6 +17,8 @@ import javax.swing.SwingConstants;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JTabbedPane;
+import javax.swing.JTextArea;
+
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Cursor;
@@ -30,28 +31,29 @@ import javax.swing.JToolBar;
 public class MainFrame extends JFrame implements ActionListener,Runnable{
 	private int width = 610,height =670;
 	private JPanel mainPanel;
+
 	private JProgressBar progressTime;
 	private JLabel score;
+
 	private JButton btnExitButton;
 	private JButton btnNewGame ;
+
+	StartAppPanel secondPanel;
 	ButtonEvents btEvns;
 	private int maxTime = 10;
 	private int time = maxTime;
 	private boolean pause;
 
-    
+	private Thread timerThread;
     public static void main(String[] args) {
-        EventQueue.invokeLater(new Runnable() {
-            public void run() {
+    	
                 try {
-                    MainFrame frame = new MainFrame();
-                    Thread thread = new Thread(frame);
-                    thread.start();
+                    new MainFrame();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-            }
-        });
+            
+        
 }
 
  
@@ -59,16 +61,53 @@ public class MainFrame extends JFrame implements ActionListener,Runnable{
         
     	btEvns = new ButtonEvents(this);
     	pause=false;
-    	getContentPane().add(mainPanel = createMainPanel());
+    	
 		setTitle("Pokemon Game");
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(width, height);
 		setLocationRelativeTo(null);
 		setVisible(true);
-		btnExitButton.addActionListener(this);
 		
+		showStartScreen();
     }
+    private void showStartScreen() {
+        secondPanel = new StartAppPanel(this);
+        getContentPane().add(secondPanel);
+        revalidate();
+        repaint();
+    }
+    public void showMainPanel() {
+        getContentPane().removeAll(); 
+        mainPanel = createMainPanel(); 
+        getContentPane().add(mainPanel); 
+        validate(); 
+        repaint(); 
+    }
+    
+ public void newGame() {
+		showMainPanel();
+		time = maxTime;
+		mainPanel.setVisible(true);
+		btEvns = new ButtonEvents(this);
+		btnExitButton.addActionListener(this);
+		btnNewGame.addActionListener(this); ;
+		pause = false;
+	    if (timerThread != null && timerThread.isAlive()) {
+	    	timerThread.interrupt(); 
+	        try {
+	            timerThread.join(); 
+	        } catch (InterruptedException e) {
+	            Thread.currentThread().interrupt();
+	           
+	        }
+	    }
+	    
+	    
+	    timerThread = new Thread(this);
+	    timerThread.start();                 
+		
+	}
     public JPanel createMainPanel() {
     	JLayeredPane layeredPane = new JLayeredPane();
         layeredPane.setLayout(null);
@@ -113,8 +152,6 @@ public class MainFrame extends JFrame implements ActionListener,Runnable{
 	    score = new JLabel("0");
 	    JLabel tiltleTime = new JLabel("Time:");
 	    btnNewGame = new JButton("New game");
-	    btnNewGame.addActionListener(this);
-	    
 	    
 	    progressTime = new JProgressBar(0, 100);
 	    progressTime.setValue(100);
@@ -166,71 +203,63 @@ public class MainFrame extends JFrame implements ActionListener,Runnable{
     public void updateScoreLabel(String newScore) {
         score.setText(newScore);
     }
-    public void newGame() {
-		
-		mainPanel.removeAll();
-		mainPanel.add(createMainPanel());
-		time = maxTime;
-		mainPanel.validate();
-		mainPanel.setVisible(true);
-		btEvns = new ButtonEvents(this);
-		btnExitButton.addActionListener(this);
-		btnNewGame.addActionListener(this); ;
-		pause = false;
-		score.setText("0");  
-	    Thread thread = new Thread(this); 
-	    thread.start();                  
-		
-	}
- 
-    
+   
+    @Override
     public void run() {
-        while (pause == false) {
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        while (!pause) {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                return;
+            }
+            
+            time--;
+            progressTime.setValue((int) ((double) time / maxTime * 100));
+            if (time <= 0 && btEvns.getItems() >= 0) {
+                EventQueue.invokeLater(() -> showDialogNewGame("You lost, do you want create new game", "Warning", "lost game"));
+                break; 
+            }
         }
-        time--;
-        progressTime.setValue((int) ((double) time / maxTime * 100));
-	        if(time <= 0 &&  btEvns.getItems() >=0) {
-	        	showDialogNewGame("You lost, do you want create new game","warning","lost game");
-	        	System.out.println("1");
-	        	break;
-	        }
+    }
+
+    public void showDialogNewGame(String message, String title, String action) {
+        pause = true;
+
+        int select = JOptionPane.showOptionDialog(this, message, title,
+                JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
+
+        if (select == 0) {
+            if ("new game".equals(action) || "lost game".equals(action)) {
+                if (timerThread != null && timerThread.isAlive()) {
+                	try {
+                        timerThread.join(); 
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                    }
+                }
+                timerThread = new Thread(this);
+                timerThread.start();
+                newGame();
+            } else if ("exit".equals(action)) {
+                getContentPane().removeAll();
+                showStartScreen();
+            }
+        } else { 
+            if ("new game".equals(action)) {
+                pause = false;
+                timerThread = new Thread(this);
+                timerThread.start();
+            } else if ("lost game".equals(action)) {
+                System.exit(1);
+            } else if ("exit".equals(action)) {
+            	pause = false;
+                timerThread = new Thread(this);
+                timerThread.start();
+            }
         }
-     }
+    }
 
-    public void showDialogNewGame(String message, String title,String action) {
-        pause=true;
-
-		int select = JOptionPane.showOptionDialog(null, message, title,
-		JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null,
-				null, null);
-		
-		if(select == 0 && action == "new game" ) {
-			newGame();
-		}
-		if(select == 1 && action == "new game" ) {
-			pause = false;
-			Thread newThread = new Thread(this);
-			newThread.start();
-		    
-		}
-		if(select == 1 && action == "lost game" ) {
-			System.exit(1);
-		}
-		if(select == 0 && action == "exit") {
-			System.exit(1);
-		}
-		if(select == 1 && action == "exit") {
-			pause = false;
-			Thread newThread = new Thread(this);
-			newThread.start();
-		}
-		
-		
-   }
 
 
 	@Override
@@ -239,8 +268,11 @@ public class MainFrame extends JFrame implements ActionListener,Runnable{
             showDialogNewGame("Are you sure you want to exit?", "Exit","exit");
         }
 		if(e.getSource()== btnNewGame) {
+			System.out.println("he");
         	showDialogNewGame("Your game hasn't done. Do you want to create a new game?", "Warning","new game");
         }
+	
+		
 		
 	}
 }
