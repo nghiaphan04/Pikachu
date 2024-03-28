@@ -1,16 +1,18 @@
 package View;
-
+import java.time.LocalDateTime;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
+import java.sql.*;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+
+import java.util.Random;
 
 public class StartAppPanel extends JPanel implements ActionListener{
 
@@ -20,7 +22,11 @@ public class StartAppPanel extends JPanel implements ActionListener{
 	private JButton btnNewGameStart;
 	private JButton btnHistory ;
 	private JButton btnOk ;
+	
 	private String namePlayer;
+	private int randomNumber;
+	private LocalDateTime times;
+	
 	
 	
 	public StartAppPanel(MainFrame mainFrame) {
@@ -51,12 +57,14 @@ public class StartAppPanel extends JPanel implements ActionListener{
         labelBg.setOpaque(true); 
         add(labelBg, Integer.valueOf(Integer.MIN_VALUE));
 	}
+	
+
+	
 	public JDialog createInputDialog() {
 	    JDialog dialog = new JDialog(mainFrame, "Enter Your Name", true);
 	    dialog.setSize(300, 150);
 	    dialog.setLayout(null);
 	    dialog.setLocationRelativeTo(mainFrame); 
-
 	    JTextField nameInput = new JTextField(10);
 	    nameInput.setBounds(50, 20, 200, 30); 
 	    dialog.add(nameInput);
@@ -65,20 +73,30 @@ public class StartAppPanel extends JPanel implements ActionListener{
 	    btnOk.setBounds(90, 70, 120, 30);
 	    btnOk.setCursor(new Cursor(Cursor.HAND_CURSOR));
 	    btnOk.setFocusPainted(false);
-	    
+	    Random random = new Random();
 	    btnOk.addActionListener(new ActionListener() {
 	        @Override
-	        public void actionPerformed(ActionEvent e) {
+	        public void actionPerformed(ActionEvent e){
+	        	randomNumber = random.nextInt(101);
 	            namePlayer = nameInput.getText();
+	            times = LocalDateTime.now();
 	            dialog.dispose();
-	            System.out.println(namePlayer);
 	        }
 	    });
 	    dialog.add(btnOk);
 	    return dialog;
 	}
+	 public String getNamePlayer() {
+	        return namePlayer;
+	    }
 
-	@Override
+	    public int getRandomNumber() {
+	        return randomNumber;
+	    }
+
+	    public LocalDateTime getTimes() {
+	        return times;
+	    }
 	public void actionPerformed(ActionEvent e) {
 	    if(e.getSource()==btnNewGameStart) {
 	        JDialog nameDialog = createInputDialog();

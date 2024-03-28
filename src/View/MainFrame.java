@@ -1,5 +1,5 @@
 package View;
-
+import java.time.LocalDateTime;
 import java.awt.BorderLayout;
 import Model.ButtonEvents;
 import java.awt.EventQueue;
@@ -27,6 +27,10 @@ import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.LayoutManager;
 import javax.swing.JToolBar;
+import java.util.Random;
+import database.connectDB;
+
+
 
 public class MainFrame extends JFrame implements ActionListener,Runnable{
 	private int width = 610,height =670;
@@ -34,17 +38,23 @@ public class MainFrame extends JFrame implements ActionListener,Runnable{
 
 	private JProgressBar progressTime;
 	private JLabel score;
-
 	private JButton btnExitButton;
 	private JButton btnNewGame ;
 
 	StartAppPanel secondPanel;
 	ButtonEvents btEvns;
-	private int maxTime = 10;
+	private int maxTime = 5;
 	private int time = maxTime;
 	private boolean pause;
 
 	private Thread timerThread;
+	
+	private int id;
+	private String namePlayer;
+	private String times;
+	private int scores;
+	private connectDB connect;
+	
     public static void main(String[] args) {
     	
                 try {
@@ -76,6 +86,7 @@ public class MainFrame extends JFrame implements ActionListener,Runnable{
         getContentPane().add(secondPanel);
         revalidate();
         repaint();
+        
     }
     public void showMainPanel() {
         getContentPane().removeAll(); 
@@ -213,16 +224,27 @@ public class MainFrame extends JFrame implements ActionListener,Runnable{
                 Thread.currentThread().interrupt();
                 return;
             }
-            
             time--;
             progressTime.setValue((int) ((double) time / maxTime * 100));
-            if (time <= 0 && btEvns.getItems() >= 0) {
+            if (time <= 0) {
+            	id = secondPanel.getRandomNumber();
+            	namePlayer = secondPanel.getNamePlayer();
+            	times = String.valueOf(secondPanel.getTimes());
+            	scores = Integer.valueOf(score.getText());
+            	connectDB.addDataToDB(id, namePlayer, scores,times);
+            	System.out.println(scores);
+            	System.out.println(id+ " " +namePlayer + " " + times);
                 EventQueue.invokeLater(() -> showDialogNewGame("You lost, do you want create new game", "Warning", "lost game"));
                 break; 
             }
         }
     }
-
+    
+    public void saveData() {
+    	
+    }
+    
+    
     public void showDialogNewGame(String message, String title, String action) {
         pause = true;
 

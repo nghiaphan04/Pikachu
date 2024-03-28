@@ -2,13 +2,12 @@ package Model;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
-
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import View.MainFrame;
 import Controller.MatrixImgIndex;
-
+import View.StartAppPanel;
 public class ButtonEvents extends JPanel implements ActionListener {
 	
 	private Color backGroundColor = Color.lightGray;
@@ -17,11 +16,12 @@ public class ButtonEvents extends JPanel implements ActionListener {
     private JButton[][] btnMtx;
     private MatrixImgIndex mtx;
     private MainFrame Frame;
-   
+    private StartAppPanel xx;
     private boolean check;
     private int items = 32;
-    private int score ;
-    
+    private int tmp;
+    private int score;
+    private String name;
     private Point p1 = null;
     private Point p2 = null;
     
@@ -83,9 +83,6 @@ public class ButtonEvents extends JPanel implements ActionListener {
     }
     
 
-    public int getScore() {
-		return score;
-	}
 
 	@Override
 	public String toString() {
@@ -110,8 +107,7 @@ public class ButtonEvents extends JPanel implements ActionListener {
     public void setBtnMtx(JButton[][] btnMtx) {
         this.btnMtx = btnMtx;
     }
-    
-    
+ 
     public void actionPerformed(ActionEvent e) {
         String indexBtn = e.getActionCommand();
         int indexTrim = indexBtn.lastIndexOf(",");
@@ -139,7 +135,7 @@ public class ButtonEvents extends JPanel implements ActionListener {
                 Frame.showDialogNewGame("You win, do you want to create a new game?", "Congratulation","new game");
             }
         }
+        
     }
-
-	
+    
 }
