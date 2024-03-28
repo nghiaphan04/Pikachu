@@ -24,9 +24,9 @@ public class StartAppPanel extends JPanel implements ActionListener{
 	private JButton btnOk ;
 	
 	private String namePlayer;
-	private int randomNumber;
+	private Random random;
 	private LocalDateTime times;
-	
+	private int number;
 	
 	
 	public StartAppPanel(MainFrame mainFrame) {
@@ -73,13 +73,13 @@ public class StartAppPanel extends JPanel implements ActionListener{
 	    btnOk.setBounds(90, 70, 120, 30);
 	    btnOk.setCursor(new Cursor(Cursor.HAND_CURSOR));
 	    btnOk.setFocusPainted(false);
-	    Random random = new Random();
 	    btnOk.addActionListener(new ActionListener() {
 	        @Override
 	        public void actionPerformed(ActionEvent e){
-	        	randomNumber = random.nextInt(101);
+	        	random = new Random();
+	        	number = random.nextInt(101);
 	            namePlayer = nameInput.getText();
-	            times = LocalDateTime.now();
+	            times =   LocalDateTime.now();
 	            dialog.dispose();
 	        }
 	    });
@@ -90,8 +90,8 @@ public class StartAppPanel extends JPanel implements ActionListener{
 	        return namePlayer;
 	    }
 
-	    public int getRandomNumber() {
-	        return randomNumber;
+	    public int getNumber() {
+	        return number;
 	    }
 
 	    public LocalDateTime getTimes() {
@@ -101,8 +101,8 @@ public class StartAppPanel extends JPanel implements ActionListener{
 	    if(e.getSource()==btnNewGameStart) {
 	        JDialog nameDialog = createInputDialog();
 	        nameDialog.setVisible(true); 
+	        mainFrame.setInformationUser(number, namePlayer, String.valueOf(LocalDateTime.now()));
 	        mainFrame.newGame();
-	        
 	    }
 	}
 }

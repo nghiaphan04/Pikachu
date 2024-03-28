@@ -1,13 +1,16 @@
 package Model;
 
 import javax.swing.*;
+import java.util.Random;
 import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import View.MainFrame;
 import Controller.MatrixImgIndex;
+
 import View.StartAppPanel;
+import database.connectDB;
 public class ButtonEvents extends JPanel implements ActionListener {
 	
 	private Color backGroundColor = Color.lightGray;
@@ -24,6 +27,14 @@ public class ButtonEvents extends JPanel implements ActionListener {
     private String name;
     private Point p1 = null;
     private Point p2 = null;
+    
+    StartAppPanel secondPanel;
+	private int id;
+	private String namePlayer;
+	private String times;
+	private int scores;
+	private connectDB connect;
+    
     
     public ButtonEvents(MainFrame frame) {
     	this.Frame =  frame;
@@ -126,16 +137,20 @@ public class ButtonEvents extends JPanel implements ActionListener {
                 score += 10;
                 Frame.updateScoreLabel(String.valueOf(this.score));
                 items--;
-                System.out.println(items);
+                
             }
             btnMtx[p1.x][p1.y].setBorder(null);
             p1 = null;
             p2 = null;
-            if (items == 0) {
+            if (items == 0) {            
+            	id = secondPanel.getNumber();
+            	namePlayer = secondPanel.getNamePlayer();
+            	times = String.valueOf(secondPanel.getTimes());
+            	scores = Integer.valueOf(score);
+            	connectDB newConnect = new connectDB();
+            	newConnect.addDataToDB(id,namePlayer,scores,times );
                 Frame.showDialogNewGame("You win, do you want to create a new game?", "Congratulation","new game");
             }
-        }
-        
+        }   
     }
-    
 }

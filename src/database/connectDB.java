@@ -12,15 +12,15 @@ public class connectDB {
     private String connectionUrl;
 
     public connectDB() {
-        this.connectionUrl = "jdbc:sqlserver://PHANDINHNGHIA\\SQLEXPRESS02:1433;databaseName=player;user=sa;password=nghia;trustServerCertificate=true";
+        this.connectionUrl = "jdbc:sqlserver://NGUYEN-VIET-HUNG\\SQLEXPRESS:1433;databaseName=player;user=sa;password=102004;trustServerCertificate=true";
     }
 
-    public void addDataToDB(int ID,String NamePlayer,  int Score,String Times ) {
+    public void addDataToDB(int ID,String UserName,  int Score,String Times ) {
         try (Connection con = DriverManager.getConnection(this.connectionUrl);
              Statement stmt = con.createStatement()) {
 
             String SQL =
- "INSERT INTO player (ID, NamePlayer, Score, Times) VALUES ("+ ID  + ", '" + NamePlayer + "', " + Score + ", '" + Times + "')";
+ "INSERT INTO player (ID, UserName, Score, Times) VALUES ("+ ID  + ", '" + UserName + "', " + Score + ", '" + Times + "')";
             stmt.executeUpdate(SQL);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -36,7 +36,7 @@ public class connectDB {
             ResultSet rs = stmt.executeQuery(SQL);
 
             while (rs.next()) {
-            	arrInformation.add(new PlayerInformation(rs.getString("ID"),rs.getString("NamePlayer"),rs.getString("Score"),rs.getString("Times")));
+            	arrInformation.add(new PlayerInformation(rs.getString("ID"),rs.getString("UserName"),rs.getString("Score"),rs.getString("Times")));
             	
             }
         } catch (SQLException e) {
@@ -46,11 +46,4 @@ public class connectDB {
 		return arrInformation;
     }
 
-    public static void main(String[] args) {
-    	ArrayList<PlayerInformation> arrInformation = new ArrayList<>();
-        connectDB a = new connectDB();
-        a.addDataToDB(5, "User5", 55, "2024-03-28 07:30:00");
-        arrInformation = a.getDataFromDB();
-        System.out.println(arrInformation.get(1).NamePlayer);
-    }
 }

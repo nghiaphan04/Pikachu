@@ -1,5 +1,6 @@
 package View;
 import java.time.LocalDateTime;
+
 import java.awt.BorderLayout;
 import Model.ButtonEvents;
 import java.awt.EventQueue;
@@ -46,6 +47,7 @@ public class MainFrame extends JFrame implements ActionListener,Runnable{
 	private int maxTime = 5;
 	private int time = maxTime;
 	private boolean pause;
+	
 
 	private Thread timerThread;
 	
@@ -89,6 +91,7 @@ public class MainFrame extends JFrame implements ActionListener,Runnable{
         
     }
     public void showMainPanel() {
+    	
         getContentPane().removeAll(); 
         mainPanel = createMainPanel(); 
         getContentPane().add(mainPanel); 
@@ -120,6 +123,7 @@ public class MainFrame extends JFrame implements ActionListener,Runnable{
 		
 	}
     public JPanel createMainPanel() {
+    	
     	JLayeredPane layeredPane = new JLayeredPane();
         layeredPane.setLayout(null);
         
@@ -227,11 +231,12 @@ public class MainFrame extends JFrame implements ActionListener,Runnable{
             time--;
             progressTime.setValue((int) ((double) time / maxTime * 100));
             if (time <= 0) {
-            	id = secondPanel.getRandomNumber();
+            	id = secondPanel.getNumber();
             	namePlayer = secondPanel.getNamePlayer();
             	times = String.valueOf(secondPanel.getTimes());
             	scores = Integer.valueOf(score.getText());
-            	connectDB.addDataToDB(id, namePlayer, scores,times);
+            	connectDB newConnect = new connectDB();
+            	newConnect.addDataToDB(id,namePlayer,scores,times );
             	System.out.println(scores);
             	System.out.println(id+ " " +namePlayer + " " + times);
                 EventQueue.invokeLater(() -> showDialogNewGame("You lost, do you want create new game", "Warning", "lost game"));
@@ -240,10 +245,12 @@ public class MainFrame extends JFrame implements ActionListener,Runnable{
         }
     }
     
-    public void saveData() {
-    	
-    }
     
+    public void setInformationUser(int ID,String UserName,String Times) {
+    	id= ID;
+    	namePlayer = UserName;
+    	times = Times;
+    }
     
     public void showDialogNewGame(String message, String title, String action) {
         pause = true;
